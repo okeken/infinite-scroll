@@ -6,23 +6,22 @@ import './index.css';
 
 function App() {
   const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(1);
 
   const url =
-    limit <= 100 &&
-    `https://jsonplaceholder.typicode.com/posts?&_limit=${limit}`;
+    page <= 10 &&
+    `https://jsonplaceholder.typicode.com/posts?&_limit=${limit}&_page=${page}`;
   const { status, data, error } = useCustomFetching(url);
 
   let options = {
-    root: null,
-    rootMargin: '10px',
-    threshold: 0.6,
+    threshold: 1,
   };
   const observer = useRef(
     new IntersectionObserver((entries) => {
       const firstpage = entries[0];
 
-      if (firstpage.isIntersecting && limit <= 100) {
-        setLimit((limit) => limit + 5);
+      if (firstpage.isIntersecting && page <= 10) {
+        setPage((page) => page + 1);
       }
     }, options)
   );
@@ -46,7 +45,7 @@ function App() {
       <div className='post-container'>
         {data.map((item) => {
           return (
-            <div className='post-body' key={item.id}>
+            <div className='post-body'>
               <h4>{item.title}</h4>
               <p>{item.body}</p>
             </div>
@@ -80,13 +79,13 @@ function App() {
           )}
         </div>
         <div>
-          {limit >= 100 && (
+          {page >= 10 && (
             <p className='all-post-noti'>You're all caught up! </p>
           )}
         </div>
 
         <div className='error-div'>
-          {error && limit <= 100 && 'Something went wrong! '}
+          {error && page <= 10 && 'Something went wrong! '}
         </div>
       </div>
     </>
