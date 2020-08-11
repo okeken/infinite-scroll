@@ -5,15 +5,15 @@ import useCustomFetching from './customFetching';
 import './index.css';
 
 function App() {
-  const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
 
   const url =
     page <= 10 &&
-    `https://jsonplaceholder.typicode.com/posts?&_limit=${limit}&_page=${page}`;
+    `https://jsonplaceholder.typicode.com/posts?&_limit=10&_page=${page}`;
   const { status, data, error } = useCustomFetching(url);
 
   let options = {
+    rootMargin: '0px',
     threshold: 1,
   };
   const observer = useRef(
@@ -80,12 +80,12 @@ function App() {
         </div>
         <div>
           {page >= 10 && (
-            <p className='all-post-noti'>You're all caught up! </p>
+            <p className='all-post-noti'>Hurray, You're all caught up! 🎉🎉 </p>
           )}
         </div>
 
         <div className='error-div'>
-          {error && page <= 10 && 'Something went wrong! '}
+          {error && page <= 10 && 'Something went wrong! 😕'}
         </div>
       </div>
     </>
