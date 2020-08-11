@@ -1,27 +1,28 @@
-import React, { useCallback, useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import useCustomFetching from './customFetching';
 
 import './index.css';
 
 function App() {
-  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
 
-  const url = `https://jsonplaceholder.typicode.com/posts?_page=${page}&_limit=10`;
+  const url =
+    limit <= 100 &&
+    `https://jsonplaceholder.typicode.com/posts?&_limit=${limit}`;
   const { status, data, error } = useCustomFetching(url);
 
   let options = {
     root: null,
-    rootMargin: '100px',
-    threshold: 0.3,
+    rootMargin: '10px',
+    threshold: 0.6,
   };
   const observer = useRef(
     new IntersectionObserver((entries) => {
       const firstpage = entries[0];
 
-      if (firstpage.isIntersecting) {
-        //if data.length ===10 return;
-        setPage((page) => page + 1);
+      if (firstpage.isIntersecting && limit <= 100) {
+        setLimit((limit) => limit + 5);
       }
     }, options)
   );
@@ -42,13 +43,12 @@ function App() {
 
   return (
     <>
-      {console.log('page number', page)}
       <div className='post-container'>
-        {data.map((item, index) => {
+        {data.map((item) => {
           return (
             <div className='post-body' key={item.id}>
               <h4>{item.title}</h4>
-              <p>{item.body || <Skeleton count={10} />}</p>
+              <p>{item.body}</p>
             </div>
           );
         })}
@@ -79,8 +79,15 @@ function App() {
             </>
           )}
         </div>
+        <div>
+          {limit >= 100 && (
+            <p className='all-post-noti'>You're all caught up! </p>
+          )}
+        </div>
 
-        <div className='error-div'>{error && 'Something went wrong! '}</div>
+        <div className='error-div'>
+          {error && limit <= 100 && 'Something went wrong! '}
+        </div>
       </div>
     </>
   );

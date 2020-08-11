@@ -27,7 +27,8 @@ body {
   font-size: 1.4rem;
 }
 
-.error-div {
+.error-div,
+.all-post-noti {
   text-align: center;
   margin: 2rem;
 }
