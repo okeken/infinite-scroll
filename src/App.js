@@ -1,12 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import useCustomFetching from './customFetching';
-
 import './index.css';
 
 function App() {
   const [page, setPage] = useState(1);
-
   const url =
     page <= 10 &&
     `https://jsonplaceholder.typicode.com/posts?&_limit=10&_page=${page}`;
@@ -33,13 +31,19 @@ function App() {
     if (currentElement) {
       currentObserver.observe(currentElement);
     }
+
     return () => {
       if (currentElement) {
         currentObserver.unobserve(currentElement);
       }
     };
   }, [element]);
-
+  let loadingSpinner = (
+    <div className='loading-div'>
+      <Skeleton width={50} />
+      <Skeleton count={3} />
+    </div>
+  );
   return (
     <>
       <div className='post-container'>
@@ -54,38 +58,30 @@ function App() {
 
         <div ref={setElement}>
           {status === 'loading' && !error && (
-            <>
-              <div className='loading-div'>
-                <Skeleton width={50} />
-                <Skeleton count={3} />
-              </div>
-              <div className='loading-div'>
-                <Skeleton width={50} />
-                <Skeleton count={3} />
-              </div>
-              <div className='loading-div'>
-                <Skeleton width={50} />
-                <Skeleton count={3} />
-              </div>
-              <div className='loading-div'>
-                <Skeleton width={50} />
-                <Skeleton count={3} />
-              </div>
-              <div className='loading-div'>
-                <Skeleton width={50} />
-                <Skeleton count={3} />
-              </div>
-            </>
+            <>{Array(4).fill(loadingSpinner)}</>
           )}
         </div>
         <div>
           {page >= 10 && (
-            <p className='all-post-noti'>Hurray, You're all caught up! 🎉🎉 </p>
+            <p className='all-post-noti'>
+              Hurray, You're all caught up!
+              <span role='img' aria-label='end of post'>
+                {' '}
+                🎉🎉{' '}
+              </span>
+            </p>
           )}
         </div>
 
         <div className='error-div'>
-          {error && page <= 10 && 'Something went wrong! 😕'}
+          {error && page <= 10 && (
+            <>
+              'Something went wrong!{' '}
+              <span role='img' aria-label='something happened'>
+                😕'
+              </span>
+            </>
+          )}
         </div>
       </div>
     </>
